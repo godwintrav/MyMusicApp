@@ -21,13 +21,6 @@ public class Music {
     private URI uri;
 
     public Music(String title, String artist, Double duration, String fileStringURI, Double stopTimeSeconds) {
-        if(title.isEmpty()){
-            this.title.set("Unknown Title");
-        }
-        this.title.set(title);
-        if(artist.isEmpty()){
-            this.artist.set("Unknown Artist");
-        }
         this.artist.set(artist);
         this.duration.set(duration);
         this.fileStringURI.set(fileStringURI);
