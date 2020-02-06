@@ -1,0 +1,14 @@
+
+#myTable {
+    -fx-background-insets: 0, 1;
+    -fx-padding: 1;
+}
+#myTable .table-column{
+    //-fx-alignment : center-left;
+    -fx-border-color: transparent;
+}
+#myTable .table-row-cell{
+    -fx-cell-size : 50px;
+    -fx-border-color: transparent;
+    -fx-padding: 0,0,0,20;
+}
