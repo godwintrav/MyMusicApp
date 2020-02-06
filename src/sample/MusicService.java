@@ -20,7 +20,7 @@ public class MusicService extends Service<ObservableList<Music>> {
     private Double duration;
     private String fileStringURI;
     private Double stopTimeSeconds;
-    private DecimalFormat df = new DecimalFormat("#.##");
+    private DecimalFormat df = new DecimalFormat("#.00");
     private int i;
 
     @Override
