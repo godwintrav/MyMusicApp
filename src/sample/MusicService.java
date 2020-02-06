@@ -12,6 +12,7 @@ import sample.datamodel.Music;
 import java.io.File;
 import java.net.URI;
 import java.text.DecimalFormat;
+import java.util.Map;
 
 public class MusicService extends Service<ObservableList<Music>> {
     private Music music;
@@ -38,20 +39,39 @@ public class MusicService extends Service<ObservableList<Music>> {
                             @Override
                             public void run() {
 //                            for (Map.Entry<String,Object> entry : media.getMetadata().entrySet()){
-//                                System.out.println(entry.getKey() + " =" + entry.getValue());
+//                                if(entry.getKey().toLowerCase().contains("title")){
+//                                    title = entry.getValue().toString();
+//                                }
+//                                //System.out.println(entry.getKey() + " =" + entry.getValue());
 //                            }
-                                if(media.getMetadata().get("title") != null){
-                                    title = media.getMetadata().get("title").toString();
-                                } else{
-                                    title = currentFile.toPath().getFileName().toString();
+                                String temptitle = "";
+                                String tempArtist = "";
+                                if( media.getMetadata().get("title") != null){
+                                    temptitle = media.getMetadata().get("title").toString().trim();
                                 }
 
+                                if(temptitle.isBlank() || temptitle.isEmpty()){
+                                    title = currentFile.toPath().getFileName().toString();
+                                } else{
+                                    title = temptitle;
+                                }
+//                                if(title.isEmpty()){
+////                                    for (Map.Entry<String,Object> entry : media.getMetadata().entrySet()){
+////                                        System.out.println(entry.getKey() + " =" + entry.getValue());
+////                                    }
+//                                }
+
                                 if(media.getMetadata().get("artist") != null){
+                                    tempArtist = media.getMetadata().get("artist").toString();
                                     artist = media.getMetadata().get("artist").toString();
                                 } else if(media.getMetadata().get("album artist") != null){
-                                    artist = media.getMetadata().get("album artist").toString();
-                                } else{
+                                    tempArtist = media.getMetadata().get("album artist").toString();
+                                }
+
+                                if(tempArtist.isEmpty() || tempArtist.isBlank()){
                                     artist = "Unknown Artist";
+                                } else{
+                                    artist = tempArtist;
                                 }
                                 fileStringURI = uri.toString();
 

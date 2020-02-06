@@ -14,6 +14,7 @@
 <?import javafx.scene.control.ToggleButton?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.TextField?>
 <BorderPane fx:controller="sample.Controller"
             xmlns:fx="http://javafx.com/fxml"
             stylesheets="@style.css">
@@ -35,6 +36,7 @@
                 </ToggleButton>
                 <ProgressBar fx:id="progressBar"/>
                 <Label fx:id="progressLabel"/>
+                <TextField fx:id="search" onKeyReleased="#searchMusic" visible="false"/>
             </HBox>
         </ToolBar>
     </top>

@@ -5,6 +5,7 @@ import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.concurrent.Service;
 import javafx.concurrent.Worker;
@@ -14,6 +15,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
@@ -28,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Comparator;
 import java.util.Random;
+import java.util.function.Predicate;
 
 public class Controller {
     @FXML
@@ -62,10 +65,15 @@ public class Controller {
     private ToggleButton shuffleBtn;
     @FXML
     private Slider volume;
+    @FXML
+    private TextField search;
 
+    private Predicate<Music> searchList;
     private Service<ObservableList<Music>> service;
     private MediaPlayer mediaPlayer;
     private Media media;
+    private SortedList<Music> sortedList;
+    private FilteredList<Music> musicFilteredList;
 
 
         public void initialize(){
@@ -85,7 +93,7 @@ public class Controller {
             service.setOnSucceeded(new EventHandler<WorkerStateEvent>() {
                 @Override
                 public void handle(WorkerStateEvent workerStateEvent) {
-                    SortedList<Music> sortedList = new SortedList<>(service.getValue(), new Comparator<Music>() {
+                    sortedList = new SortedList<>(service.getValue(), new Comparator<Music>() {
                         @Override
                         public int compare(Music o1, Music o2) {
                             return o1.getTitle().compareTo(o2.getTitle());
@@ -101,6 +109,7 @@ public class Controller {
                     timeSlider.setDisable(false);
                     volume.setVisible(true);
                     timeSlider.setValue(0.0);
+                    search.setVisible(true);
                     setPlay(music);
                     volume.setValue(mediaPlayer.getVolume() * 100);
                 }
@@ -116,10 +125,11 @@ public class Controller {
                             if(empty){
                                 setText(null);
                             } else{
-//                                if(s.isEmpty()){
-//                                    setText("Unknown Title");
-//                                }
-                                setText(s);
+                                if(s.isBlank()){
+                                    setText("Unknown Title");
+                                } else{
+                                    setText(s);
+                                }
                                 setAlignment(Pos.CENTER_LEFT);
                                 setPadding(new Insets(0,0,0,20));
                             }
@@ -167,12 +177,6 @@ public class Controller {
                         }
                     };
                     return cell;
-                }
-            });
-            tableView.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Music>() {
-                @Override
-                public void changed(ObservableValue<? extends Music> observableValue, Music music, Music t1) {
-                    System.out.println(t1.getTitle());
                 }
             });
             tableView.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -284,7 +288,7 @@ public class Controller {
                 playBtnPressed();
             }else{
                 int index = tableView.getSelectionModel().getSelectedIndex();
-                if(index == tableView.getItems().size()-1){
+                if(index >= tableView.getItems().size()-1){
                     tableView.getSelectionModel().select(0);
                     tableView.scrollTo(0);
                 }else{
@@ -317,5 +321,22 @@ public class Controller {
             }
             playBtnPressed();
         }
+    }
+
+    @FXML
+    public void searchMusic() {
+            String txtSearch = search.getText().trim();
+            if(!txtSearch.isEmpty()){
+                searchList = new Predicate<Music>() {
+                    @Override
+                    public boolean test(Music music) {
+                        return music.getTitle().toLowerCase().contains(txtSearch.toLowerCase());
+                    }
+                };
+                musicFilteredList = new FilteredList<>(sortedList,searchList);
+                tableView.setItems(musicFilteredList);
+            } else {
+                tableView.setItems(sortedList);
+            }
     }
 }

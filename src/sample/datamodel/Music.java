@@ -8,6 +8,7 @@ import javafx.scene.media.MediaPlayer;
 import java.io.File;
 import java.net.URI;
 import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Music {
     private SimpleStringProperty title = new SimpleStringProperty("");
@@ -21,6 +22,7 @@ public class Music {
     private URI uri;
 
     public Music(String title, String artist, Double duration, String fileStringURI, Double stopTimeSeconds) {
+        this.title.set(title);
         this.artist.set(artist);
         this.duration.set(duration);
         this.fileStringURI.set(fileStringURI);
